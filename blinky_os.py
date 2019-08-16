@@ -34,8 +34,8 @@ def run_script(speed, script):
         if i == len(script):
             i = 0
         row = script[i]
-        print(f'blinky command {str(i).zfill(2)} {row}')
-
+        print('blinky command {} {}'.format(str(i).zfill(2),row))
+	run_row(row)
         time.sleep(speed)
         i += 1
 
@@ -43,7 +43,7 @@ def main():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    for pin in LedPin:
+    for pin in LED_PINS:
 	    GPIO.setup(pin, GPIO.OUT)
 
     args = sys.argv[1:]
