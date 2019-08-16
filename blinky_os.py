@@ -5,6 +5,8 @@ import time
 import sys
 
 LED_PINS = [4,17,18,27,22,23,24]
+PWM = []
+FREQ = 100
 
 def read_script(path):
     with open(path) as f:
@@ -35,7 +37,7 @@ def run_script(speed, script):
             i = 0
         row = script[i]
         print('blinky command {} {}'.format(str(i).zfill(2),row))
-	run_row(row)
+        run_row(row)
         time.sleep(speed)
         i += 1
 
@@ -44,17 +46,19 @@ def main():
     GPIO.setwarnings(False)
 
     for pin in LED_PINS:
-	    GPIO.setup(pin, GPIO.OUT)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin, GPIO.LOW)
+        PWM.append(GPIO.PWM(pin, FREQ))
 
     args = sys.argv[1:]
     speed, script = read_script(args[0])
     try:
         run_script(speed, script)
     except KeyboardInterrupt:
-        for pin in LED_PINS:
-            GPIO.output(pin, GPIO.HIGH)    # turn off all leds
-            GPIO.cleanup()
-    
+        for i,pwm in enumerate(PWM):
+        	pwm.stop()
+        	GPIO.output(LED_PINS[i], GPIO.HIGH)    # turn off all leds
+        	GPIO.cleanup()
 
 if __name__ == "__main__":
     main()
