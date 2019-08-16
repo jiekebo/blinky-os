@@ -57,7 +57,6 @@ def main():
     except KeyboardInterrupt:
         for i,pwm in enumerate(PWM):
         	pwm.stop()
-        	GPIO.output(LED_PINS[i], GPIO.HIGH)    # turn off all leds
         	GPIO.cleanup()
 
 if __name__ == "__main__":
