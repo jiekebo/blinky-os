@@ -48,7 +48,13 @@ def main():
 
     args = sys.argv[1:]
     speed, script = read_script(args[0])
-    run_script(speed, script)
+    try:
+        run_script(speed, script)
+    except KeyboardInterrupt:
+        for pin in LED_PINS:
+            GPIO.output(pin, GPIO.HIGH)    # turn off all leds
+            GPIO.cleanup()
+    
 
 if __name__ == "__main__":
     main()
