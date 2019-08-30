@@ -36,7 +36,7 @@ def run_script(speed, script):
         if i == len(script):
             i = 0
         row = script[i]
-        print('blinky command {} {}'.format(str(i).zfill(2),row))
+        #print('blinky command {} {}'.format(str(i).zfill(2),row))
         run_row(row)
         time.sleep(speed)
         i += 1
@@ -59,5 +59,36 @@ def main():
         	pwm.stop()
         	GPIO.cleanup()
 
-if __name__ == "__main__":
-    main()
+
+def start_script(name):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+
+    for pin in LED_PINS:
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin, GPIO.LOW)
+        PWM.append(GPIO.PWM(pin, FREQ))
+
+    speed, script = read_script(name)
+    try:
+        run_script(speed, script)
+    except KeyboardInterrupt:
+        for i,pwm in enumerate(PWM):
+                pwm.stop()
+                GPIO.cleanup()
+
+
+#if __name__ == "__main__":
+#    main()
+
+
+from flask import Flask
+app = Flask(__name__)
+
+
+@app.route('/')
+def hello():
+    start_script('script_0.txt')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
